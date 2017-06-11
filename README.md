@@ -1,6 +1,3 @@
-HomePage: [Lpc-Win32's HomePage](http://www.lpc-win32.com)
-FileBeat: Add publish threads to improve performance (230%)
-
 [![Travis](https://travis-ci.org/elastic/beats.svg?branch=master)](https://travis-ci.org/elastic/beats)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/p7y92i6pp2v7vnrd/branch/master?svg=true)](https://ci.appveyor.com/project/elastic-beats/beats/branch/master)
 [![GoReportCard](http://goreportcard.com/badge/elastic/beats)](http://goreportcard.com/report/elastic/beats)
@@ -24,6 +21,7 @@ framework for creating Beats, and all the officially supported Beats:
 Beat  | Description
 --- | ---
 [Filebeat](https://github.com/elastic/beats/tree/master/filebeat) | Tails and ships log files
+[Heartbeat](https://github.com/elastic/beats/tree/master/heartbeat) | Ping remote services for availability
 [Metricbeat](https://github.com/elastic/beats/tree/master/metricbeat) | Fetches sets of metrics from the operating system and services
 [Packetbeat](https://github.com/elastic/beats/tree/master/packetbeat) | Monitors the network and applications by sniffing packets
 [Winlogbeat](https://github.com/elastic/beats/tree/master/winlogbeat) | Fetches and ships Windows Event logs
@@ -41,6 +39,7 @@ on the [elastic.co site](https://www.elastic.co/guide/):
 
 * [Beats platform](https://www.elastic.co/guide/en/beats/libbeat/current/index.html)
 * [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/index.html)
+* [Heartbeat](https://www.elastic.co/guide/en/beats/heartbeat/current/index.html)
 * [Metricbeat](https://www.elastic.co/guide/en/beats/metricbeat/current/index.html)
 * [Packetbeat](https://www.elastic.co/guide/en/beats/packetbeat/current/index.html)
 * [Winlogbeat](https://www.elastic.co/guide/en/beats/winlogbeat/current/index.html)

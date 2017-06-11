@@ -14,7 +14,11 @@ package harvester
 import (
 	"errors"
 	"fmt"
+	"sync"
 
+	"github.com/satori/go.uuid"
+
+	"github.com/elastic/beats/filebeat/channel"
 	"github.com/elastic/beats/filebeat/config"
 	"github.com/elastic/beats/filebeat/harvester/encoding"
 	"github.com/elastic/beats/filebeat/harvester/source"
@@ -33,27 +37,32 @@ var (
 
 type Harvester struct {
 	config          harvesterConfig
-	state           file.State
+	State           file.State
 	prospectorChan  chan *input.Event
 	file            source.FileSource /* the file being watched */
 	fileReader      *LogFile
 	encodingFactory encoding.EncodingFactory
 	encoding        encoding.Encoding
 	done            chan struct{}
+	stopOnce        sync.Once
+	stopWg          *sync.WaitGroup
+	outlet          *channel.Outlet
+	ID              uuid.UUID
 }
 
 func NewHarvester(
 	cfg *common.Config,
 	state file.State,
-	prospectorChan chan *input.Event,
-	done chan struct{},
+	outlet *channel.Outlet,
 ) (*Harvester, error) {
 
 	h := &Harvester{
-		config:         defaultConfig,
-		state:          state,
-		prospectorChan: prospectorChan,
-		done:           done,
+		config: defaultConfig,
+		State:  state,
+		done:   make(chan struct{}),
+		stopWg: &sync.WaitGroup{},
+		outlet: outlet,
+		ID:     uuid.NewV4(),
 	}
 
 	if err := cfg.Unpack(&h.config); err != nil {
@@ -65,6 +74,9 @@ func NewHarvester(
 		return nil, fmt.Errorf("unknown encoding('%v')", h.config.Encoding)
 	}
 	h.encodingFactory = encodingFactory
+
+	// Add outlet signal so harvester can also stop itself
+	h.outlet.SetSignal(h.done)
 
 	return h, nil
 }

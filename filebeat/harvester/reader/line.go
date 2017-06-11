@@ -49,6 +49,7 @@ func NewLine(input io.Reader, codec encoding.Encoding, bufferSize int) (*Line, e
 
 // Next reads the next line until the new line character
 func (l *Line) Next() ([]byte, int, error) {
+
 	// This loop is need in case advance detects an line ending which turns out
 	// not to be one when decoded. If that is the case, reading continues.
 	for {

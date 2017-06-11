@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,15 +17,18 @@ const (
 	DefaultInputType = "log"
 )
 
+// Add max_publish_cnt param
 type Config struct {
-	Prospectors     []*common.Config `config:"prospectors"`
-	SpoolSize       uint64           `config:"spool_size" validate:"min=1"`
-	PublishAsync    bool             `config:"publish_async"`
-	IdleTimeout     time.Duration    `config:"idle_timeout" validate:"nonzero,min=0s"`
-	RegistryFile    string           `config:"registry_file"`
-	ConfigDir       string           `config:"config_dir"`
-	ShutdownTimeout time.Duration    `config:"shutdown_timeout"`
-	MaxPublishCNT   int              `config:"max_publish_cnt"`
+	Prospectors      []*common.Config `config:"prospectors"`
+	SpoolSize        uint64           `config:"spool_size" validate:"min=1"`
+	PublishAsync     bool             `config:"publish_async"`
+	IdleTimeout      time.Duration    `config:"idle_timeout" validate:"nonzero,min=0s"`
+	RegistryFile     string           `config:"registry_file"`
+	ConfigDir        string           `config:"config_dir"`
+	ShutdownTimeout  time.Duration    `config:"shutdown_timeout"`
+	Modules          []*common.Config `config:"modules"`
+	ProspectorReload *common.Config   `config:"config.prospectors"`
+	MaxPublishCNT    int              `config:"max_publish_cnt"`
 }
 
 var (
@@ -124,12 +126,6 @@ func (config *Config) FetchConfigs() error {
 	err = mergeConfigFiles(configFiles, config)
 	if err != nil {
 		log.Fatal("Error merging config files: ", err)
-		return err
-	}
-
-	if len(config.Prospectors) == 0 {
-		err := errors.New("No paths given. What files do you want me to watch?")
-		log.Fatalf("%v", err)
 		return err
 	}
 

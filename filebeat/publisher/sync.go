@@ -35,9 +35,11 @@ func newSyncLogPublisher(
 	}
 }
 
+// Change: Multi Publisher
+// Author: Pengcheng Liu
+// Date  : 2017-06-01
 func (p *syncLogPublisher) Start() {
 	MAX_PUBLISH_CNT := p.maxPublishCNT
-
 	p.client = make([]publisher.Client, MAX_PUBLISH_CNT)
 
 	// init connection pool
@@ -77,7 +79,9 @@ func (p *syncLogPublisher) Publish(index int) error {
 	case events = <-p.in:
 	}
 
-	ok := p.client[index].PublishEvents(getDataEvents(events), publisher.Sync, publisher.Guaranteed)
+	dataEvents, meta := getDataEvents(events)
+	ok := p.client[index].PublishEvents(dataEvents, publisher.Sync, publisher.Guaranteed,
+		publisher.MetadataBatch(meta))
 	if !ok {
 		// PublishEvents will only returns false, if p.client has been closed.
 		return sigPublisherStop
@@ -88,7 +92,6 @@ func (p *syncLogPublisher) Publish(index int) error {
 	eventsSent.Add(int64(len(events)))
 
 	// Tell the logger that we've successfully sent these events
-	// sync.WaitGroup.Done() all events
 	ok = p.out.Published(events)
 	if !ok {
 		// stop publisher if successfully send events can not be logged anymore.

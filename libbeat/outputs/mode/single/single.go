@@ -163,6 +163,14 @@ func (s *Mode) publish(
 		}
 		s.backoff.Wait()
 
+		/*if s.maxAttempts > 0 && fails == s.maxAttempts {
+			logp.Info("fails == s.maxAttempts-------------------")
+			debugf("send completed")
+			s.backoff.Reset()
+			op.SigCompleted(signaler)
+			return nil
+		}*/
+
 		if !guaranteed && (s.maxAttempts > 0 && fails == s.maxAttempts) {
 			// max number of attempts reached
 			debugf("max number of attempts reached")

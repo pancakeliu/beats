@@ -2,11 +2,9 @@ package main
 
 import (
 	"os"
-    "net/http"
 
 	"github.com/elastic/beats/filebeat/beater"
 	"github.com/elastic/beats/libbeat/beat"
-    _ "net/http/pprof"
 )
 
 var Name = "filebeat"
@@ -21,11 +19,7 @@ var Name = "filebeat"
 // determine where in each file to restart a harvester.
 
 func main() {
-    go func() {
-        http.ListenAndServe("localhost:6060", nil)
-    } ()
-
-    if err := beat.Run(Name, "", beater.New); err != nil {
-    os.Exit(1)
+	if err := beat.Run(Name, "", beater.New); err != nil {
+		os.Exit(1)
 	}
 }
